@@ -4,27 +4,31 @@ MAINTAINER Giles Richard Greenway
 
 ENV HOME /root
 
-RUN sed -i s/httpredir/ftp.uk/ /etc/apt/sources.list
+RUN sed -i s/httpredir/ftp.us/ /etc/apt/sources.list
 
 RUN apt-get -q -y update
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y --fix-missing install \
-    git \
     build-essential \
     curl \
-    python-pip \
-    python-dev \
-    python-virtualenv \
+    git \
     libpq-dev \
-    openssh-server \
-    postgresql \
-    postgresql-contrib \
+    lynx \
     mongodb \
     mongodb-server \
-    supervisor \
     nano \
-    lynx \
-    screen
+    nginx \
+    openssh-server \
+    php5-fpm \
+    php5-sqlite \
+    postgresql \
+    postgresql-contrib \
+    python-dev \
+    python-pip \
+    python-virtualenv \
+    screen \
+    supervisor \
+    unzip 
 
 # Create virtualenvs    
 RUN virtualenv pdsEnv    
@@ -64,12 +68,20 @@ RUN /registryEnv/bin/pip install pexpect
 RUN mkdir -p  /var/www/trustframework/registryEnv/OMS-RegistryServer
 RUN touch /var/www/trustframework/registryEnv/OMS-RegistryServer/test.db
 
-# https://github.com/coleifer/sqlite-web
-RUN pip install sqlite-web
-
 RUN  mkdir -p /var/run/sshd
+
+# http://www.phpliteadmin.org/
+RUN cd /var/www/html && curl --location https://bitbucket.org/phpliteadmin/public/downloads/phpLiteAdmin_v1-9-6.zip > phpLiteAdmin_v1-9-6.zip
+RUN cd /var/www/html && unzip phpLiteAdmin_v1-9-6.zip
+RUN rm /var/www/html/phpLiteAdmin_v1-9-6.zip
 
 ADD scripts /
 ADD conf / 
+
+RUN cp default /etc/nginx/sites-enabled/
+RUN cp nginx.conf /etc/nginx/
+RUN cp phpliteadmin.config.php /var/www/html/
+
+RUN cp index.html /var/www/html/
 
 CMD /usr/bin/supervisord
