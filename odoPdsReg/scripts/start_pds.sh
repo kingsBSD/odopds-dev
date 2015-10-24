@@ -1,3 +1,6 @@
+until mongo --eval 'db.stats()'; do
+    echo "Waiting for MongoDB"
+done
 cd /pdsEnv
 source ./bin/activate
 cd openPDS

@@ -1,4 +1,4 @@
-sed -i s/pds.linkedpersonaldata.org/localhost:8002/g /registryEnv/openPDS-RegistryServer/registryServer/settings.py
+sed -i "s/pds.linkedpersonaldata.org/$HOSTADDR:8002/g" /registryEnv/openPDS-RegistryServer/registryServer/settings.py
 cd /registryEnv
 source ./bin/activate
 cd openPDS-RegistryServer/registryServer
